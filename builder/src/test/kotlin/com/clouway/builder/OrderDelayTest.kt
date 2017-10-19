@@ -8,30 +8,23 @@ import org.junit.Test
 import java.util.*
 
 class OrderDelayTest {
-    val orderBuilder = OrderBuilder()
+    lateinit var orderBuilder: OrderBuilder
     lateinit var order: Order
 
     @Before
     fun setUp() {
-        val chip = OrderItemBuilder()
-        chip.productName = "Atmega 328"
-        chip.measureUnit = "pcs"
-        chip.quantity = 7.0
-        chip.price = 7.5
-
-        val jumper = OrderItemBuilder()
-        jumper.productName = "jumper"
-        jumper.measureUnit = "pcs"
-        jumper.quantity = 150.0
-        jumper.price = 0.05
-
-        orderBuilder.addItem(chip.build())
-        orderBuilder.addItem(jumper.build())
-
-        orderBuilder.customerAddress = "Gabrovo, Zelena Livada"
-        orderBuilder.customerName = "Stanimir Iliev"
-        orderBuilder.orderCreationDate = GregorianCalendar(2017, 10, 15).time
-        orderBuilder.orderId = 562215316316
+        orderBuilder = OrderBuilder().apply {
+            customerAddress = "Gabrovo, Zelena Livada"
+            customerName = "Stanimir Iliev"
+            orderCreationDate = GregorianCalendar(2017, 10, 15).time
+            orderId = 562215316316
+            addItem(OrderItemBuilder().apply {
+                productName = "jumper"
+                measureUnit = "pcs"
+                quantity = 150.0
+                price = 0.05
+            }.build())
+        }
     }
 
 

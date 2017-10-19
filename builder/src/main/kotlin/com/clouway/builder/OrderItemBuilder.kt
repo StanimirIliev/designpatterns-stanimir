@@ -1,8 +1,8 @@
 package com.clouway.builder
 
 class OrderItemBuilder {
-    var productName = ""
-    var measureUnit = ""
+    var productName = "something"
+    var measureUnit = "something"
     var quantity = 0.0
     var price = 0.0
 
