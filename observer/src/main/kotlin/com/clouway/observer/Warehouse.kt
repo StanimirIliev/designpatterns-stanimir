@@ -1,12 +1,16 @@
 package com.clouway.observer
 
 import com.clouway.observer.products.Product
+import io.reactivex.Observable
 
 class Warehouse(val availableObserver: Observer, val soldObserver: Observer) {
+
+    val observers: Observable<Observer>
 
     init {
         availableObserver.addWarehouse(this)
         soldObserver.addWarehouse(this)
+        observers = Observable.just(availableObserver, soldObserver)
     }
 
     val available = ArrayList<Product>()
@@ -21,7 +25,7 @@ class Warehouse(val availableObserver: Observer, val soldObserver: Observer) {
             else {
                 available.add(product)
             }
-            availableObserver.update()
+            observers.firstElement().subscribe{s->s.update()}
         }
     }
 
@@ -33,7 +37,7 @@ class Warehouse(val availableObserver: Observer, val soldObserver: Observer) {
         val soldProduct = isSold(product)
         if(soldProduct != null) {
             soldProduct.quantity += quantity
-            soldObserver.update()
+            observers.lastElement().subscribe{s->s.update()}
             return true
         }
         else {
@@ -43,9 +47,9 @@ class Warehouse(val availableObserver: Observer, val soldObserver: Observer) {
             } else {
                 available.remove(availableProduct)
                 sold.add(availableProduct)
-                availableObserver.update()
+                observers.firstElement().subscribe{s->s.update()}
             }
-            soldObserver.update()
+            observers.lastElement().subscribe{s->s.update()}
             return true
         }
     }
@@ -69,11 +73,15 @@ class Warehouse(val availableObserver: Observer, val soldObserver: Observer) {
     }
 
     fun getAvailableProductsInfo(): String {
-        return availableObserver.info
+        var output = ""
+        observers.firstElement().subscribe{s->output = s.info}
+        return output
     }
 
     fun getSoldProductsInfo(): String {
-        return soldObserver.info
+        var output = ""
+        observers.lastElement().subscribe{s->output = s.info}
+        return output
     }
 
     fun clear() {
