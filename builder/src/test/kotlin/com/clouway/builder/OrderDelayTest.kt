@@ -8,43 +8,24 @@ import org.junit.Test
 import java.util.*
 
 class OrderDelayTest {
-    lateinit var orderBuilder: OrderBuilder
-    lateinit var order: Order
-
-    @Before
-    fun setUp() {
-        orderBuilder = OrderBuilder().apply {
-            customerAddress = "Gabrovo, Zelena Livada"
-            customerName = "Stanimir Iliev"
-            orderCreationDate = GregorianCalendar(2017, 10, 15).time
-            orderId = 562215316316
-            addItem(OrderItemBuilder().apply {
-                productName = "jumper"
-                measureUnit = "pcs"
-                quantity = 150.0
-                price = 0.05
-            }.build())
-        }
+    val orderBuilder = OrderBuilder().apply {
+        orderCreationDate = GregorianCalendar(2017, 10, 15).time
     }
-
 
     @Test
     fun hasDelay() {
         orderBuilder.orderDeliveryDate = GregorianCalendar(2017, 10, 19).time
-        order = orderBuilder.build()
-        assertThat(order.isDelayDelivery(), `is`(equalTo(true)))
+        assertThat(orderBuilder.build().isDelayDelivery(), `is`(equalTo(true)))
     }
 
     @Test
     fun hasNotDelay() {
         orderBuilder.orderDeliveryDate = GregorianCalendar(2017, 10, 17).time
-        order = orderBuilder.build()
-        assertThat(order.isDelayDelivery(), `is`(equalTo(false)))
+        assertThat(orderBuilder.build().isDelayDelivery(), `is`(equalTo(false)))
     }
 
     @Test(expected = NullPointerException::class)
     fun unsetDate() {
-        order = orderBuilder.build()
-        order.isDelayDelivery()
+        orderBuilder.build().isDelayDelivery()
     }
 }
